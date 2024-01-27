@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const debug = require('debug')("mongoose-movies:database")
+const debug = require('debug')("mongoose-RSAF-dan")
 
 mongoose.set("debug", true);
 mongoose.connect(process.env.DATABASE_URL);
