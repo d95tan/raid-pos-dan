@@ -12,7 +12,7 @@ const itemSchema = new Schema(
       required: true,
       min: 0,
     },
-    quantity: {
+    inventory: {
       type: Number,
       required: true,
       min: 0,
