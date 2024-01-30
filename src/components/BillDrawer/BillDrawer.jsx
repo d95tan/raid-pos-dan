@@ -8,12 +8,36 @@ import {
   TableRow,
   Button,
 } from "@mui/material";
+import { postSale } from "../../utilities/sales/salesService";
+import { useEffect, useState } from "react";
+import { centsToDollars } from "../../utilities/helper";
 
 const drawerWidth = 350;
 
-export default function BillDrawer({ items, setItems }) {
+export default function BillDrawer({ items, updateInventory }) {
+  const [total, setTotal] = useState(0);
+
+  useEffect(() => {
+    if (items) {
+      setTotal(
+        centsToDollars(
+          items.reduce((accumulator, curr) => {
+            return accumulator + curr.quantity * curr.price;
+          }, 0)
+        )
+      );
+    }
+  }, [items]);
+
   const handleSale = async () => {
-    console.log("lcick");
+    try {
+      const sale = await postSale(items);
+      updateInventory(sale);
+    } catch (e) {
+      window.alert(
+        "There was an error with your request. Please try again later."
+      );
+    }
     return;
   };
 
@@ -54,9 +78,9 @@ export default function BillDrawer({ items, setItems }) {
                         {item.name}
                       </TableCell>
                       <TableCell align="right">{item.quantity}</TableCell>
-                      <TableCell align="right">{item.price}</TableCell>
+                      <TableCell align="right">{centsToDollars(item.price)}</TableCell>
                       <TableCell align="right">
-                        {item.price * item.quantity}
+                        {centsToDollars(item.price * item.quantity)}
                       </TableCell>
                     </TableRow>
                   );
@@ -67,16 +91,17 @@ export default function BillDrawer({ items, setItems }) {
             <TableCell align="right"></TableCell>
             <TableCell align="right"></TableCell>
             <TableCell align="right">TOTAL:</TableCell>
-            <TableCell align="right">
-              {items.reduce((accumulator, curr) => {
-                return accumulator + curr.quantity * curr.price;
-              }, 0)}
-            </TableCell>
+            <TableCell align="right">{total}</TableCell>
           </TableRow>
         </TableBody>
       </Table>
       <br />
-      <Button size="large" variant="contained" onClick={handleSale}>
+      <Button
+        size="large"
+        variant="contained"
+        onClick={handleSale}
+        disabled={!total}
+      >
         Confirm
       </Button>
     </Drawer>
