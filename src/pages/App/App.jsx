@@ -8,6 +8,7 @@ import Navbar from "../../components/Navbar/Navbar"
 import { Route, Routes } from "react-router-dom"
 
 import MainPage from '../MainPage/MainPage'
+import SalesHistoryPage from '../SalesHistoryPage/SalesHistoryPage';
 
 function App() {
 
@@ -16,6 +17,7 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<MainPage />} />
+        <Route path="/history" element={<SalesHistoryPage />} />
       </Routes>
     </>
   )
