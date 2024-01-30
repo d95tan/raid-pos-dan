@@ -6,7 +6,6 @@ import BillDrawer from "../../components/BillDrawer/BillDrawer";
 
 export default function MainPage() {
   const [items, setItems] = useState(null);
-  const [bill, setBill] = useState({});
 
   useEffect(() => {
     (async function () {
@@ -29,21 +28,31 @@ export default function MainPage() {
     setItems(temp);
   };
 
+  const updateInventory = (sale) => {
+    const tempItems = structuredClone(items);
+    for (const item of tempItems) {
+      item.quantity = 0;
+      for (const saleItem of sale.items) {
+        if (item._id === saleItem.itemId) {
+          item.inventory -= saleItem.quantity;
+          break;
+        }
+      }
+    }
+    setItems(tempItems);
+  };
+
   return (
     <>
       <div className="items-container">
         {items
           ? items.map((item, i) => {
               return (
-                <ItemCard
-                  key={i}
-                  item={item}
-                  changeQuantity={changeQuantity}
-                />
+                <ItemCard key={i} item={item} changeQuantity={changeQuantity} />
               );
             })
           : null}
-        <BillDrawer items={items} bill={bill} />
+        <BillDrawer items={items} updateInventory={updateInventory} />
       </div>
     </>
   );
